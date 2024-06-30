@@ -10,23 +10,64 @@ import SwiftUI
 struct ContentView: View {
     @State var unitToConvert = "Length"
     @State var inputUnit = "meters"
-    @State var outputUnit = "kilometers"
+    @State var outputUnit = "meters"
     @State var inputValue = 0
     
     var outputValue: String {
         let value = Double(inputValue)
-        var kilometers: Measurement<UnitLength> = .init(value: 0, unit: .kilometers)
-        
-        // Length
-        if inputUnit == "meters" || outputUnit == "kilometers" {
-            let meters = Measurement(value: value, unit: UnitLength.meters)
-            kilometers = meters.converted(to: .kilometers)
+        let valueDictLength: [String: UnitLength] = [
+            "meters": .meters,
+            "kilometers": .kilometers,
+            "feet": .feet,
+            "yards": .yards,
+            "miles": .miles
+        ]
+                
+        let valueDictTemp: [String: UnitTemperature] = [
+            "Celsius": .celsius,
+            "Fahrenheit": .fahrenheit,
+            "Kelvin": .kelvin
+        ]
+                
+        let valueDictTime: [String: UnitDuration] = [
+            "seconds": .seconds,
+            "minutes": .minutes,
+            "hours": .hours
+        ]
+                
+        switch unitToConvert {
+        case "Length":
+            if let fromUnit = valueDictLength[inputUnit],
+                let toUnit = valueDictLength[outputUnit] {
+                let valueFrom = Measurement(value: value, unit: fromUnit)
+                let valueTo = valueFrom.converted(to: toUnit)
+                let formatter = MeasurementFormatter()
+                return formatter.string(from: valueTo)
+            }
+        case "Temperature":
+            if let fromUnit = valueDictTemp[inputUnit],
+               let toUnit = valueDictTemp[outputUnit] {
+                let valueFrom = Measurement(value: value, unit: fromUnit)
+                let valueTo = valueFrom.converted(to: toUnit)
+                let formatter = MeasurementFormatter()
+                return formatter.string(from: valueTo)
+            }
+        case "Time":
+            if let fromUnit = valueDictTime[inputUnit],
+               let toUnit = valueDictTime[outputUnit] {
+                let valueFrom = Measurement(value: value, unit: fromUnit)
+                let valueTo = valueFrom.converted(to: toUnit)
+                let formatter = MeasurementFormatter()
+                return formatter.string(from: valueTo)
+            }
+        default:
+            return "Error"
         }
-        let formatter = MeasurementFormatter()
-        return formatter.string(from: kilometers)
+                
+        return "Error"
     }
     
-    let valuesToConvert = ["Temperature": ["Celsius", "Fahrenheit", "Kelvin"], "Length": ["meters", "kilometers", "feet", "yards", "miles"], "Time": ["seconds", "minutes", "hours", "days"], "Volume": ["liters", "gallons", "cubic meters"]]
+    let valuesToConvert = ["Temperature": ["Celsius", "Fahrenheit", "Kelvin"], "Length": ["meters", "kilometers", "feet", "yards", "miles"], "Time": ["seconds", "minutes", "hours", "days"]]
     
     var body: some View {
         let units = valuesToConvert[unitToConvert]
