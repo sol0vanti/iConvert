@@ -14,6 +14,7 @@ struct ContentView: View {
     @State var inputValue = 0
     
     var outputValue: String {
+        print(outputUnit)
         let value = Double(inputValue)
         let valueDictLength: [String: UnitLength] = [
             "meters": .meters,
@@ -38,27 +39,30 @@ struct ContentView: View {
         switch unitToConvert {
         case "Length":
             if let fromUnit = valueDictLength[inputUnit],
-                let toUnit = valueDictLength[outputUnit] {
+               let toUnit = valueDictLength[outputUnit] {
                 let valueFrom = Measurement(value: value, unit: fromUnit)
                 let valueTo = valueFrom.converted(to: toUnit)
-                let formatter = MeasurementFormatter()
-                return formatter.string(from: valueTo)
+                let value = valueTo.value
+                let roundedValue = round(value * 100) / 100.0
+                return "\(roundedValue) \(valueTo.unit.symbol)"
             }
         case "Temperature":
             if let fromUnit = valueDictTemp[inputUnit],
                let toUnit = valueDictTemp[outputUnit] {
                 let valueFrom = Measurement(value: value, unit: fromUnit)
                 let valueTo = valueFrom.converted(to: toUnit)
-                let formatter = MeasurementFormatter()
-                return formatter.string(from: valueTo)
+                let value = valueTo.value
+                let roundedValue = round(value * 100) / 100.0
+                return "\(roundedValue) \(valueTo.unit.symbol)"
             }
         case "Time":
             if let fromUnit = valueDictTime[inputUnit],
                let toUnit = valueDictTime[outputUnit] {
                 let valueFrom = Measurement(value: value, unit: fromUnit)
                 let valueTo = valueFrom.converted(to: toUnit)
-                let formatter = MeasurementFormatter()
-                return formatter.string(from: valueTo)
+                let value = valueTo.value
+                let roundedValue = round(value * 100) / 100.0
+                return "\(roundedValue) \(valueTo.unit.symbol)"
             }
         default:
             return "Error"
@@ -67,7 +71,7 @@ struct ContentView: View {
         return "Error"
     }
     
-    let valuesToConvert = ["Temperature": ["Celsius", "Fahrenheit", "Kelvin"], "Length": ["meters", "kilometers", "feet", "yards", "miles"], "Time": ["seconds", "minutes", "hours", "days"]]
+    let valuesToConvert = ["Temperature": ["Celsius", "Fahrenheit", "Kelvin"], "Length": ["meters", "kilometers", "feet", "yards", "miles"], "Time": ["seconds", "minutes", "hours"]]
     
     var body: some View {
         let units = valuesToConvert[unitToConvert]
